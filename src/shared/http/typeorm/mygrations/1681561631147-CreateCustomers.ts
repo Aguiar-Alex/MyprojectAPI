@@ -14,7 +14,7 @@ export class CreateCustomers1681561631147 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'Customers',
+            name: 'name',
             type: 'varchar',
           },
           {
