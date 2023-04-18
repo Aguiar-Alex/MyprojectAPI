@@ -6,6 +6,8 @@ import User from '@modules/users/typeorm/entities/User';
 import { UserToken1679615832455 } from './mygrations/1679615832455-User_Token';
 import UserToken from '@modules/users/typeorm/entities/UserToken';
 import { CreateCustomers1681561631147 } from './mygrations/1681561631147-CreateCustomers';
+import Customers from '@modules/customers/typeorm/entities/Customers';
+import { PostRefactoring1681777838954 } from './mygrations/1681777838954-PostRefactoring';
 
 export const PostgresDataSource = new DataSource({
   type: 'postgres',
@@ -16,6 +18,7 @@ export const PostgresDataSource = new DataSource({
   database: 'apivendas',
   entities: [],
   migrations: [
+    PostRefactoring1681777838954,
     CreateCustomers1681561631147,
     CreateUsers1677960749614,
     CreateProducts1676936872635,
