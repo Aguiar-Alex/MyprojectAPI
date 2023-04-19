@@ -36,7 +36,6 @@ export default class CustomersController {
       name,
       email,
     });
-
     return response.json(customer);
   }
   // método atualização do produto
