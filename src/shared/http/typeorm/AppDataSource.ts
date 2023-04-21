@@ -17,7 +17,7 @@ export const PostgresDataSource = new DataSource({
   username: 'postgres',
   password: 'docker',
   database: 'apivendas',
-  entities: [Product, User, UserToken, Customers],
+  entities: [Customers, Product, User, UserToken],
   migrations: [
     RefactorCustomers1681947453766,
     PostRefactoring1681777838954,
