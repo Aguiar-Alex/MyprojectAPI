@@ -4,8 +4,9 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import isAuthenticated from '@shared/http/middlewares/isAuthenticated';
 
 const customersRouter = Router();
-customersRouter.use(isAuthenticated);
 const customersController = new CustomersController();
+
+customersRouter.use(isAuthenticated);
 
 // rota para listagem
 customersRouter.get('/', customersController.index);
