@@ -14,6 +14,8 @@ import { AddCustomerIdToOrders1682380704094 } from './mygrations/1682380704094-A
 import { OrdersProducts1682382086011 } from './mygrations/1682382086011-OrdersProducts';
 import { AddOrderIdToOrdersProducts1682383037443 } from './mygrations/1682383037443-AddOrderIdToOrdersProducts';
 import { AddProductIdToOrdersProducts1682383680108 } from './mygrations/1682383680108-AddProductIdToOrdersProducts';
+import Order from '@modules/orders/typeorm/entities/Order';
+import OrderProducts from '@modules/orders/typeorm/entities/OrdersProducts';
 
 export const PostgresDataSource = new DataSource({
   type: 'postgres',
@@ -22,7 +24,7 @@ export const PostgresDataSource = new DataSource({
   username: 'postgres',
   password: 'docker',
   database: 'apivendas',
-  entities: [],
+  entities: [Customers, Order, OrderProducts, Product, User, UserToken],
   migrations: [
     AddProductIdToOrdersProducts1682383680108,
     AddOrderIdToOrdersProducts1682383037443,
