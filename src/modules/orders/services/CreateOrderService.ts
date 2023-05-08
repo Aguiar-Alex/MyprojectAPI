@@ -3,7 +3,7 @@ import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
 import Order from '../typeorm/entities/Order';
 import Product from '@modules/products/typeorm/entities/Product';
 import { CustomersRepository } from '@modules/customers/typeorm/repositories/CustomersRepository';
-import { ProductsRepository } from '@modules/products/typeorm/entities/repositories/ProductRepository';
+import { ProductsRepository } from '@modules/products/typeorm/repositories/ProductRepository';
 import { OrdersRepository } from '../typeorm/repositories/OrdersRepository';
 
 interface IProduct {
@@ -71,7 +71,7 @@ export default class CreateOrderService {
     const updatedProductQuantity = order_products.map(product => ({
       id: product.product_id,
       quantity:
-        existsProducts.filter(p => p.id === product.product_id)[0].quantity -
+        existsProducts.filter(p => p.id === product.id)[0].quantity -
         product.quantity,
     }));
 

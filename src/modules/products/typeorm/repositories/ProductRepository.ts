@@ -1,6 +1,6 @@
 import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
-import Product from '../Product';
 import { In } from 'typeorm';
+import Product from '../entities/Product';
 
 interface IFindProducts {
   id: string;

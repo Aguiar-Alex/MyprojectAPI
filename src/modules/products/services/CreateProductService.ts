@@ -1,7 +1,7 @@
 import AppError from '@shared/http/errors/AppErrors';
 import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
 import Product from '../typeorm/entities/Product';
-import { ProductsRepository } from '../typeorm/entities/repositories/ProductRepository';
+import { ProductsRepository } from '../typeorm/repositories/ProductRepository';
 
 interface IRequest {
   name: string;
