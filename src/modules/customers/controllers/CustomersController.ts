@@ -9,9 +9,12 @@ export default class CustomersController {
   // método de listagem
 
   public async index(request: Request, response: Response): Promise<Response> {
+    const page = request.query.page ? Number(request.query.page) : 1;
+    const limit = request.query.limit ? Number(request.query.limit) : 15;
+
     const listCustomers = new ListCustomerService();
 
-    const customers = await listCustomers.execute();
+    const customers = await listCustomers.execute({ page, limit });
 
     return response.json(customers);
   }
