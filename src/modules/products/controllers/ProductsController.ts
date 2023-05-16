@@ -9,9 +9,12 @@ export default class ProductsController {
   // método de listagem
 
   public async index(request: Request, response: Response): Promise<Response> {
+    const page = request.query.page ? Number(request.query.page) : 1;
+    const limit = request.query.limit ? Number(request.query.limit) : 15;
+
     const listProducts = new ListProductService();
 
-    const products = await listProducts.execute();
+    const products = await listProducts.execute({ page, limit });
 
     return response.json(products);
   }
