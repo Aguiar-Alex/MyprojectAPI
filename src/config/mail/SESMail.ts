@@ -36,6 +36,9 @@ export default class SESMail {
     const transporter = nodemailer.createTransport({
       SES: new aws.SES({
         apiVersion: '2010-12-01',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACESS_KEY,
+        region: 'us-east-1',
       }),
     });
 
