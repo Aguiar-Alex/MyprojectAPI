@@ -1,9 +1,7 @@
 import AppError from '@shared/http/errors/AppErrors';
 import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
 import User from '../typeorm/entities/User';
-import path from 'path';
-import uploadConfig from '@config/upload';
-import fs from 'fs';
+import DiskStorageProvider from '@shared/providers/StorageProvider/DiskStorageProvider';
 
 interface IRequest {
   id: string;
@@ -13,6 +11,7 @@ interface IRequest {
 export default class UpdateUserAvatarService {
   public async execute({ id, avatarFileName }: IRequest): Promise<User> {
     const userRepository = PostgresDataSource.getRepository(User);
+    const storageProvider = new DiskStorageProvider();
 
     const user = await userRepository.findOneBy({ id });
 
@@ -21,14 +20,12 @@ export default class UpdateUserAvatarService {
     }
 
     if (user.avatar) {
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      if (userAvatarFileExists) {
-        await fs.promises.unlink(userAvatarFilePath);
-      }
+      await storageProvider.deleteFile(user.avatar);
     }
-    user.avatar = avatarFileName;
+
+    const filename = await storageProvider.saveFile(avatarFileName);
+
+    user.avatar = filename;
 
     await userRepository.save(user);
 
