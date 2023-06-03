@@ -1,6 +1,6 @@
 import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
 import Product from '../typeorm/entities/Product';
-import RedisCache from '@shared/cache/RedisCache';
+import redisCache from '@shared/cache/RedisCache';
 
 interface SearchParams {
   page: number;
@@ -21,7 +21,7 @@ export default class ListProductService {
   }: SearchParams): Promise<IPaginateProduct | Product[]> {
     const productRepository = PostgresDataSource.getRepository(Product);
 
-    const redisCache = new RedisCache();
+    //const redisCache = new RedisCache();
 
     const productsCache = await redisCache.recover<
       IPaginateProduct | Product[]
