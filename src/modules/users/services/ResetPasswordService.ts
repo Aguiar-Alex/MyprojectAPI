@@ -1,9 +1,9 @@
-import AppError from '@shared/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
+import AppError from '@shared/infra/http/errors/AppErrors';
+import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
 import { isAfter, addHours } from 'date-fns';
 import { hash } from 'bcryptjs';
-import UserToken from '../typeorm/entities/UserToken';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
+import UserToken from '../infra/typeorm/entities/UserToken';
+import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
 
 interface IRequest {
   token: string;

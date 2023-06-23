@@ -1,7 +1,7 @@
-import AppError from '@shared/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
+import AppError from '@shared/infra/http/errors/AppErrors';
+import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
 import { hash } from 'bcryptjs';
-import User from '../typeorm/entities/User';
+import User from '../infra/typeorm/entities/User';
 
 interface IRequest {
   name: string;

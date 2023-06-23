@@ -1,6 +1,6 @@
-import AppError from '@shared/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
-import User from '../typeorm/entities/User';
+import AppError from '@shared/infra/http/errors/AppErrors';
+import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
+import User from '../infra/typeorm/entities/User';
 import uploadConfig from '@config/upload';
 import DiskStorageProvider from '@shared/providers/StorageProvider/DiskStorageProvider';
 import S3StorageProvider from '@shared/providers/StorageProvider/S3StorageProvider ';

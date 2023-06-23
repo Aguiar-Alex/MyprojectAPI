@@ -1,9 +1,9 @@
-import AppError from '@shared/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
+import AppError from '@shared/infra/http/errors/AppErrors';
+import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import authConfig from '@config/auth';
-import User from '../typeorm/entities/User';
+import User from '../infra/typeorm/entities/User';
 
 interface IRequest {
   email: string;

@@ -1,5 +1,5 @@
-import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
-import Product from '../typeorm/entities/Product';
+import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
+import Product from '../infra/typeorm/entities/Product';
 import redisCache from '@shared/cache/RedisCache';
 
 interface SearchParams {

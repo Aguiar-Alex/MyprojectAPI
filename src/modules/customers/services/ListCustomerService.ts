@@ -1,5 +1,5 @@
-import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
-import Customers from '../typeorm/entities/Customers';
+import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
+import Customers from '../infra/typeorm/entities/Customers';
 
 interface SearchParams {
   page: number;

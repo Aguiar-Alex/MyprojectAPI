@@ -1,8 +1,8 @@
-import AppError from '@shared/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/http/typeorm/AppDataSource';
+import AppError from '@shared/infra/http/errors/AppErrors';
+import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
 import path from 'path';
-import User from '../typeorm/entities/User';
-import { UsersTokenRepository } from '../typeorm/repositories/UserTokenRepository';
+import User from '../infra/typeorm/entities/User';
+import { UsersTokenRepository } from '../infra/typeorm/repositories/UserTokenRepository';
 import EtherealMail from '@config/mail/EtherealMail';
 import SESMail from '@config/mail/SESMail';
 import mailConfig from '@config/mail/mail';
