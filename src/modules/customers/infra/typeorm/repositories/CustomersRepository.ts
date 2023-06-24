@@ -3,24 +3,6 @@ import Customers from '../entities/Customers';
 import { Repository } from 'typeorm';
 import { ICustomerRepository } from '@modules/customers/domain/repositories/ICustomersRepository';
 import { ICreateCustomer } from '@modules/customers/domain/models/ICreateCustomer';
-/*
-export const CustomersRepository = PostgresDataSource.getRepository(
-  Customers,
-).extend({
-  async findByID(id: string) {
-    const customer = await this.findOneBy({ id });
-    return customer;
-  },
-  async findByName(name: string) {
-    const customer = await this.findOneBy({ name });
-    return customer;
-  },
-  async findByEmail(email: string) {
-    const customer = await this.findOneBy({ email });
-    return customer;
-  },
-});
-*/
 
 export default class CustomersRepository implements ICustomerRepository {
   private ormRepository: Repository<Customers>;
