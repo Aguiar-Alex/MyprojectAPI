@@ -4,6 +4,7 @@ import DeleteCustomerService from '@modules/customers/services/DeleteCustomersSe
 import ListCustomerService from '@modules/customers/services/ListCustomerService';
 import ShowCustomerService from '@modules/customers/services/ShowCustomerService';
 import UpdateCustomerService from '@modules/customers/services/UpdateCustomerService';
+import { container } from 'tsyringe';
 
 export default class CustomersController {
   // método de listagem
@@ -33,7 +34,7 @@ export default class CustomersController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, email } = request.body;
 
-    const createCustomer = new CreateCustomerService();
+    const createCustomer = container.resolve(CreateCustomerService);
 
     const customer = await createCustomer.execute({
       name,
