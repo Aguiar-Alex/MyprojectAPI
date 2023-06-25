@@ -1,6 +1,6 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
 import User from '../infra/typeorm/entities/User';
-import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
+import { UsersRepository } from '@modules/users/infra/typeorm/repositories/UsersRepository';
 
 interface IRequest {
   user_id: string;

@@ -4,6 +4,7 @@ import DeleteProductService from '@modules/products/services/DeleteProductSevice
 import ListProductService from '@modules/products/services/ListProductService';
 import ShowProductService from '@modules/products/services/ShowProductsService';
 import UpdateProductService from '@modules/products/services/UpdateProductService';
+import { container } from 'tsyringe';
 
 export default class ProductsController {
   // método de listagem
@@ -33,7 +34,7 @@ export default class ProductsController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, price, quantity } = request.body;
 
-    const createProducts = new CreateProductService();
+    const createProducts = container.resolve(CreateProductService);
 
     const product = await createProducts.execute({
       name,
