@@ -1,25 +1,27 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import Customers from '../infra/typeorm/entities/Customers';
-import { CustomersRepository } from '../infra/typeorm/repositories/CustomersRepository';
+import { IUpdateCustomer } from '../domain/models/IUpdateCustomer';
+import { inject, injectable } from 'tsyringe';
+import { ICustomerRepository } from '../domain/repositories/ICustomersRepository';
+import { ICustomer } from '../domain/models/ICustomer';
 
-interface IRequest {
-  id: string;
-  name: string;
-  email: string;
-}
-
+@injectable()
 export default class UpdateCustomerService {
-  public async execute({ id, name, email }: IRequest): Promise<Customers> {
-    const customerRepository = PostgresDataSource.getRepository(Customers);
-
-    const customer = await CustomersRepository.findByID(id);
+  constructor(
+    @inject('CustomersRepository')
+    private customersRepository: ICustomerRepository,
+  ) {}
+  public async execute({
+    id,
+    name,
+    email,
+  }: IUpdateCustomer): Promise<ICustomer> {
+    const customer = await this.customersRepository.findByID(id);
 
     if (!customer) {
       throw new AppError('Customer not found !');
     }
 
-    const customerExists = await CustomersRepository.findByEmail(email);
+    const customerExists = await this.customersRepository.findByEmail(email);
 
     if (customerExists && email != customer.email) {
       throw new AppError('There is already one customer with this email');
@@ -28,7 +30,7 @@ export default class UpdateCustomerService {
     customer.name = name;
     customer.email = email;
 
-    await customerRepository.save(customer);
+    await this.customersRepository.save(customer);
 
     return customer;
   }

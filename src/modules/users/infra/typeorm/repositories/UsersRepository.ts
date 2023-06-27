@@ -22,6 +22,10 @@ export default class UsersRepository implements IUserRepository {
     return user;
   }
 
+  public async remove(user: User): Promise<void> {
+    await this.ormRepository.remove(user);
+  }
+
   public async findByID(id: string): Promise<User | null> {
     const user = await this.ormRepository.findOneBy({ id });
 

@@ -9,9 +9,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import OrderProducts from './OrdersProducts';
+import { IOrder } from '@modules/orders/domain/models/IOrder';
 
 @Entity('Orders')
-export default class Order {
+export default class Order implements IOrder {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

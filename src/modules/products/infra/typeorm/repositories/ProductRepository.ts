@@ -27,6 +27,15 @@ export default class ProductsRepository implements IProductRepository {
     return product;
   }
 
+  public async remove(product: Product): Promise<void> {
+    await this.ormRepository.remove(product);
+  }
+
+  public async findByID(id: string): Promise<Product | null> {
+    const product = await this.ormRepository.findOneBy({ id });
+    return product;
+  }
+
   public async findByName(name: string): Promise<Product | null> {
     const product = this.ormRepository.findOneBy({ name });
 

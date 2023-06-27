@@ -24,7 +24,7 @@ export default class ProductsController {
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
 
-    const showProduct = new ShowProductService();
+    const showProduct = container.resolve(ShowProductService);
 
     const product = await showProduct.execute({ id });
 
@@ -49,7 +49,7 @@ export default class ProductsController {
     const { name, price, quantity } = request.body;
     const { id } = request.params;
 
-    const updateProducts = new UpdateProductService();
+    const updateProducts = container.resolve(UpdateProductService);
 
     const product = await updateProducts.execute({
       id,
@@ -63,7 +63,7 @@ export default class ProductsController {
   public async delete(request: Request, response: Response) {
     const { id } = request.params;
 
-    const deleteProduct = new DeleteProductService();
+    const deleteProduct = container.resolve(DeleteProductService);
 
     await deleteProduct.execute({ id });
 

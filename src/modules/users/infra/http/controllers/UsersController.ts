@@ -34,7 +34,7 @@ export default class UsersController {
   public async delete(request: Request, response: Response) {
     const { id } = request.params;
 
-    const deleteCustomer = new DeleteUserService();
+    const deleteCustomer = container.resolve(DeleteUserService);
 
     await deleteCustomer.execute({ id });
 

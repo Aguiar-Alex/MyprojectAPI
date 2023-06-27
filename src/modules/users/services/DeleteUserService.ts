@@ -1,22 +1,21 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import User from '../infra/typeorm/entities/User';
-import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
+import { IDeleteUser } from '../domain/models/IDeleteUser';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
 
-interface IRequest {
-  id: string;
-}
-
+@injectable()
 export default class DeleteUserService {
-  public async execute({ id }: IRequest): Promise<void> {
-    const userRepository = PostgresDataSource.getRepository(User);
-
-    const user = await UsersRepository.findByID(id);
+  constructor(
+    @inject('UsersRepository')
+    private userRepository: IUserRepository,
+  ) {}
+  public async execute({ id }: IDeleteUser): Promise<void> {
+    const user = await this.userRepository.findByID(id);
 
     if (!user) {
       throw new AppError('User not found !');
     }
 
-    await userRepository.remove(user);
+    await this.userRepository.remove(user);
   }
 }

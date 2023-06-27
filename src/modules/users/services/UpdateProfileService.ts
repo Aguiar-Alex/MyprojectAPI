@@ -1,34 +1,30 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
 import { compare, hash } from 'bcryptjs';
-import User from '../infra/typeorm/entities/User';
-import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
+import { IUpdateProfile } from '../domain/models/IUpdateProfile';
+import { IUser } from '../domain/models/IUser';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
 
-interface IRequest {
-  user_id: string;
-  name: string;
-  email: string;
-  password?: string;
-  old_password?: string;
-}
-
+@injectable()
 export default class UpdateProfileService {
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository,
+  ) {}
   public async execute({
     user_id,
     name,
     email,
     password,
     old_password,
-  }: IRequest): Promise<User> {
-    const userRepository = PostgresDataSource.getRepository(User);
-
-    const user = await UsersRepository.findByID(user_id);
+  }: IUpdateProfile): Promise<IUser> {
+    const user = await this.usersRepository.findByID(user_id);
 
     if (!user) {
       throw new AppError('User not found.');
     }
 
-    const userUpdateEmail = await UsersRepository.findByEmail(email);
+    const userUpdateEmail = await this.usersRepository.findByEmail(email);
 
     if (userUpdateEmail && userUpdateEmail.id != user_id) {
       throw new AppError('There is already one user this email.');
@@ -51,7 +47,7 @@ export default class UpdateProfileService {
     user.name = name;
     user.email = email;
 
-    await userRepository.save(user);
+    await this.usersRepository.save(user);
 
     return user;
   }

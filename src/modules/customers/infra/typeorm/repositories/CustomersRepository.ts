@@ -22,6 +22,10 @@ export default class CustomersRepository implements ICustomerRepository {
     return customer;
   }
 
+  public async remove(customer: Customers) {
+    await this.ormRepository.remove(customer);
+  }
+
   public async findByID(id: string): Promise<Customers | null> {
     const customer = await this.ormRepository.findOneBy({ id });
     return customer;

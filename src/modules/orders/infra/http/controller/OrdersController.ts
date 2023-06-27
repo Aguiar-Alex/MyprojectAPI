@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import ShowOrderService from '../../../services/ShowOrderService';
 import CreateOrderService from '../../../services/CreateOrderService';
+import { container } from 'tsyringe';
 
 export default class OrdersController {
   public async show(request: Request, response: Response): Promise<Response> {
@@ -16,7 +17,7 @@ export default class OrdersController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { customer_id, products } = request.body;
 
-    const createOrder = new CreateOrderService();
+    const createOrder = container.resolve(CreateOrderService);
 
     const order = await createOrder.execute({
       customer_id,

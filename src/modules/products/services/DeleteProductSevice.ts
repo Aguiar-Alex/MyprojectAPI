@@ -1,17 +1,18 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import Product from '../infra/typeorm/entities/Product';
 import redisCache from '@shared/cache/RedisCache';
+import { IDeleteProducts } from '../domain/models/IDeleteProducts';
+import { inject, injectable } from 'tsyringe';
+import { IProductRepository } from '../domain/repositories/IProductRepository';
 
-interface IRequest {
-  id: string;
-}
-
+@injectable()
 export default class DeleteProductService {
-  public async execute({ id }: IRequest): Promise<void> {
-    const productRepository = PostgresDataSource.getRepository(Product);
+  constructor(
+    @inject('ProductRepository')
+    private productRepository: IProductRepository,
+  ) {}
 
-    const product = await productRepository.findOneBy({ id });
+  public async execute({ id }: IDeleteProducts): Promise<void> {
+    const product = await this.productRepository.findByID(id);
 
     if (!product) {
       throw new AppError('Product not found !');
@@ -21,6 +22,6 @@ export default class DeleteProductService {
 
     await redisCache.invalidate('api-vendas-PRODUCT_LIST');
 
-    await productRepository.remove(product);
+    await this.productRepository.remove(product);
   }
 }

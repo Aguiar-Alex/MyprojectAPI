@@ -1,22 +1,22 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import Customers from '../infra/typeorm/entities/Customers';
-import { CustomersRepository } from '../infra/typeorm/repositories/CustomersRepository';
+import { IDeleteCustomer } from '../domain/models/IDeleteCustomer';
+import { inject, injectable } from 'tsyringe';
+import { ICustomerRepository } from '../domain/repositories/ICustomersRepository';
 
-interface IRequest {
-  id: string;
-}
-
+@injectable()
 export default class DeleteCustomerService {
-  public async execute({ id }: IRequest): Promise<void> {
-    const customerRepository = PostgresDataSource.getRepository(Customers);
+  constructor(
+    @inject('CustomersRepository')
+    private customerRepository: ICustomerRepository,
+  ) {}
 
-    const customer = await CustomersRepository.findByID(id);
+  public async execute({ id }: IDeleteCustomer): Promise<void> {
+    const customer = await this.customerRepository.findByID(id);
 
     if (!customer) {
       throw new AppError('Customer not found !');
     }
 
-    await customerRepository.remove(customer);
+    await this.customerRepository.remove(customer);
   }
 }

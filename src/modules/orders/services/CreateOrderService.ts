@@ -1,30 +1,34 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
 import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import Order from '../infra/typeorm/entities/Order';
 import Product from '@modules/products/infra/typeorm/entities/Product';
-import { CustomersRepository } from '@modules/customers/infra/typeorm/repositories/CustomersRepository';
-import { ProductsRepository } from '@modules/products/infra/typeorm/repositories/ProductRepository';
 import { OrdersRepository } from '../infra/typeorm/repositories/OrdersRepository';
+import { ICustomerOrder } from '../domain/models/ICustomerOrder';
+import { IOrder } from '../domain/models/IOrder';
+import { inject, injectable } from 'tsyringe';
+import { ICustomerRepository } from '@modules/customers/domain/repositories/ICustomersRepository';
+import { IProductRepository } from '@modules/products/domain/repositories/IProductRepository';
 
-interface IProduct {
-  id: string;
-  quantity: number;
-}
-interface IRequest {
-  customer_id: string;
-  products: IProduct[];
-}
-
+injectable();
 export default class CreateOrderService {
-  public async execute({ customer_id, products }: IRequest): Promise<Order> {
+  constructor(
+    @inject('CustomersRepository')
+    private customerRepository: ICustomerRepository,
+    @inject('ProductRepository')
+    private productRepository: IProductRepository,
+  ) {}
+
+  public async execute({
+    customer_id,
+    products,
+  }: ICustomerOrder): Promise<IOrder> {
     const productRepository = PostgresDataSource.getRepository(Product);
 
-    const customerExists = await CustomersRepository.findByID(customer_id);
+    const customerExists = await this.customerRepository.findByID(customer_id);
 
     if (!customerExists) {
       throw new AppError('Could not find any customer with the given id.');
     }
-    const existsProducts = await ProductsRepository.findAllByIds(products);
+    const existsProducts = await this.productRepository.findAllByIds(products);
 
     if (!existsProducts.length) {
       throw new AppError('Could not find any products with the given ids.');
