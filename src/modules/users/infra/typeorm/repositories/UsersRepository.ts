@@ -3,9 +3,18 @@ import User from '../entities/User';
 import { Repository } from 'typeorm';
 import { IUserRepository } from '@modules/users/domain/repositories/IUserRepository';
 import { ICreateUser } from '@modules/users/domain/models/ICreateUser';
+import { IUserPaginate } from '@modules/users/domain/models/IUserPaginate';
+
+type SearchParams = {
+  page: number;
+  skip: number;
+  take: number;
+};
 
 export default class UsersRepository implements IUserRepository {
-  constructor(private ormRepository: Repository<User>) {
+  private ormRepository: Repository<User>;
+
+  constructor() {
     this.ormRepository = PostgresDataSource.getRepository(User);
   }
 
@@ -30,6 +39,26 @@ export default class UsersRepository implements IUserRepository {
     const user = await this.ormRepository.findOneBy({ id });
 
     return user;
+  }
+
+  public async findAll({
+    page,
+    skip,
+    take,
+  }: SearchParams): Promise<IUserPaginate> {
+    const [users, count] = await this.ormRepository
+      .createQueryBuilder()
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
+
+    const result = {
+      per_page: take,
+      total: count,
+      current_page: page,
+      data: users,
+    };
+    return result;
   }
 
   public async findByName(name: string): Promise<User | null> {

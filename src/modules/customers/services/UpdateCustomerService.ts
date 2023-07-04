@@ -1,6 +1,6 @@
 import AppError from '@shared/infra/http/errors/AppErrors';
-import { IUpdateCustomer } from '../domain/models/IUpdateCustomer';
 import { inject, injectable } from 'tsyringe';
+import { IUpdateCustomer } from '../domain/models/IUpdateCustomer';
 import { ICustomerRepository } from '../domain/repositories/ICustomersRepository';
 import { ICustomer } from '../domain/models/ICustomer';
 

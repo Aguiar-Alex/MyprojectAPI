@@ -1,32 +1,59 @@
-import Customers from '@modules/customers/infra/typeorm/entities/Customers';
 import Order from '../entities/Order';
 import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
+import { IOrdersRepository } from '@modules/orders/domain/repositories/IOrdersRepository';
+import { Repository } from 'typeorm';
+import { ICreateOrder } from '@modules/orders/domain/models/ICreateOrder';
+import { IOrderPaginate } from '@modules/orders/domain/models/IOrderPaginate';
 
-interface IProduct {
-  product_id: string;
-  price: number;
-  quantity: number;
-}
-interface IRequest {
-  customer: Customers;
-  products: IProduct[];
-}
+type SearchParams = {
+  page: number;
+  skip: number;
+  take: number;
+};
 
-export const OrdersRepository = PostgresDataSource.getRepository(Order).extend({
-  async findByID(id: string) {
-    const order = await this.findOneBy({ id });
-    await this.find({
+export default class OrdersRepository implements IOrdersRepository {
+  private ormRepository: Repository<Order>;
+
+  constructor() {
+    this.ormRepository = PostgresDataSource.getRepository(Order);
+  }
+
+  public async findByID(id: string): Promise<Order | null> {
+    const order = await this.ormRepository.findOneBy({ id });
+    await this.ormRepository.find({
       relations: ['order_products', 'customer'],
     });
     return order;
-  },
-  async createOrder({ customer, products }: IRequest): Promise<Order> {
-    const order = this.create({
+  }
+
+  public async findAll({
+    page,
+    skip,
+    take,
+  }: SearchParams): Promise<IOrderPaginate> {
+    const [orders, count] = await this.ormRepository
+      .createQueryBuilder()
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
+
+    const result = {
+      per_page: take,
+      total: count,
+      current_page: page,
+      data: orders,
+    };
+    return result;
+  }
+
+  public async create({ customer, products }: ICreateOrder): Promise<Order> {
+    const order = this.ormRepository.create({
       customer,
       order_products: products,
     });
 
-    await this.save(order);
+    await this.ormRepository.save(order);
+
     return order;
-  },
-});
+  }
+}

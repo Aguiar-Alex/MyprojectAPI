@@ -1,18 +1,20 @@
+import { inject, singleton } from 'tsyringe';
 import AppError from '@shared/infra/http/errors/AppErrors';
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import Product from '@modules/products/infra/typeorm/entities/Product';
-import { OrdersRepository } from '../infra/typeorm/repositories/OrdersRepository';
-import { ICustomerOrder } from '../domain/models/ICustomerOrder';
 import { IOrder } from '../domain/models/IOrder';
-import { inject, injectable } from 'tsyringe';
 import { ICustomerRepository } from '@modules/customers/domain/repositories/ICustomersRepository';
 import { IProductRepository } from '@modules/products/domain/repositories/IProductRepository';
+import { IOrdersRepository } from '../domain/repositories/IOrdersRepository';
+import { IRequestCreateOrder } from '../domain/models/IRequestCreateOrder';
 
-injectable();
+@singleton()
 export default class CreateOrderService {
   constructor(
+    @inject('OrdersRepository')
+    private ordersRepository: IOrdersRepository,
+
     @inject('CustomersRepository')
     private customerRepository: ICustomerRepository,
+
     @inject('ProductRepository')
     private productRepository: IProductRepository,
   ) {}
@@ -20,9 +22,7 @@ export default class CreateOrderService {
   public async execute({
     customer_id,
     products,
-  }: ICustomerOrder): Promise<IOrder> {
-    const productRepository = PostgresDataSource.getRepository(Product);
-
+  }: IRequestCreateOrder): Promise<IOrder> {
     const customerExists = await this.customerRepository.findByID(customer_id);
 
     if (!customerExists) {
@@ -65,7 +65,7 @@ export default class CreateOrderService {
       price: existsProducts.filter(p => p.id === product.id)[0].price,
     }));
 
-    const order = await OrdersRepository.createOrder({
+    const order = await this.ordersRepository.create({
       customer: customerExists,
       products: serializedProducts,
     });
@@ -79,7 +79,7 @@ export default class CreateOrderService {
         product.quantity,
     }));
 
-    await productRepository.save(updatedProductQuantity);
+    await this.productRepository.updateStock(updatedProductQuantity);
 
     return order;
   }

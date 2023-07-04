@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 import CreateUserService from '@modules/users/services/CreateUsersService';
 import ListUserService from '@modules/users/services/ListUsersService';
 import DeleteUserService from '@modules/users/services/DeleteUserService';
 import { instanceToInstance } from 'class-transformer';
-import { container } from 'tsyringe';
 
 export default class UsersController {
   public async index(request: Request, response: Response): Promise<Response> {
     const page = request.query.page ? Number(request.query.page) : 1;
     const limit = request.query.limit ? Number(request.query.limit) : 15;
 
-    const listUsers = new ListUserService();
+    const listUsers = container.resolve(ListUserService);
 
     const users = await listUsers.execute({ page, limit });
 

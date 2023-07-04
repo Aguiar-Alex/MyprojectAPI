@@ -1,35 +1,24 @@
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import User from '../infra/typeorm/entities/User';
+import { IUserPaginate } from '../domain/models/IUserPaginate';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
+import { inject, injectable } from 'tsyringe';
 
 interface SearchParams {
   page: number;
   limit: number;
 }
 
-interface IPaginateUser {
-  per_page: number;
-  total: number;
-  current_page: number;
-  data: User[];
-}
-
+@injectable()
 export default class ListUserService {
-  public async execute({ page, limit }: SearchParams): Promise<IPaginateUser> {
-    const userRepository = PostgresDataSource.getRepository(User);
+  constructor(
+    @inject('UsersRepository')
+    private userRepository: IUserRepository,
+  ) {}
 
-    const [users, count] = await userRepository
-      .createQueryBuilder('Users')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
+  public async execute({ page, limit }: SearchParams): Promise<IUserPaginate> {
+    const take = limit;
+    const skip = (Number(page) - 1) * limit;
+    const users = await this.userRepository.findAll({ page, skip, take });
 
-    const result = {
-      per_page: limit,
-      total: count,
-      current_page: page,
-      data: users,
-    };
-
-    return result as IPaginateUser;
+    return users;
   }
 }

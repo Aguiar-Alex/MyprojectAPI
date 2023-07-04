@@ -1,37 +1,29 @@
-import { PostgresDataSource } from '@shared/infra/typeorm/AppDataSource';
-import Customers from '../infra/typeorm/entities/Customers';
+import { ICustomerPaginate } from '../domain/models/ICustomerPaginate';
+import { ICustomerRepository } from '../domain/repositories/ICustomersRepository';
+import { inject, injectable } from 'tsyringe';
 
 interface SearchParams {
   page: number;
   limit: number;
 }
-
-interface IPaginateCustomer {
-  per_page: number;
-  total: number;
-  current_page: number;
-  data: Customers[];
-}
-
+@injectable()
 export default class ListCustomerService {
+  constructor(
+    @inject('CustomersRepository')
+    private customersRepository: ICustomerRepository,
+  ) {}
   public async execute({
     page,
     limit,
-  }: SearchParams): Promise<IPaginateCustomer> {
-    const customersRepository = PostgresDataSource.getRepository(Customers);
-    const [customers, count] = await customersRepository
-      .createQueryBuilder('Customers')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
+  }: SearchParams): Promise<ICustomerPaginate> {
+    const take = limit;
+    const skip = (Number(page) - 1) * take;
+    const customers = await this.customersRepository.findAll({
+      page,
+      skip,
+      take,
+    });
 
-    const result = {
-      per_page: limit,
-      total: count,
-      current_page: page,
-      data: customers,
-    };
-
-    return result as IPaginateCustomer;
+    return customers;
   }
 }

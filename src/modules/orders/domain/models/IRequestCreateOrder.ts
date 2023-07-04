@@ -1,6 +1,6 @@
 import { IProductOrder } from './IProductOrder';
 
-export interface ICustomerOrder {
+export interface IRequestCreateOrder {
   customer_id: string;
   products: IProductOrder[];
 }

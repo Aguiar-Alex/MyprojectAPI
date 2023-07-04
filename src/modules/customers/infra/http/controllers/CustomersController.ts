@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 import CreateCustomerService from '@modules/customers/services/CreateCustomerService';
 import DeleteCustomerService from '@modules/customers/services/DeleteCustomersService';
 import ListCustomerService from '@modules/customers/services/ListCustomerService';
 import ShowCustomerService from '@modules/customers/services/ShowCustomerService';
 import UpdateCustomerService from '@modules/customers/services/UpdateCustomerService';
-import { container } from 'tsyringe';
 
 export default class CustomersController {
   // método de listagem
@@ -13,7 +13,7 @@ export default class CustomersController {
     const page = request.query.page ? Number(request.query.page) : 1;
     const limit = request.query.limit ? Number(request.query.limit) : 15;
 
-    const listCustomers = new ListCustomerService();
+    const listCustomers = container.resolve(ListCustomerService);
 
     const customers = await listCustomers.execute({ page, limit });
 
