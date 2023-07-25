@@ -1,49 +1,14 @@
 import 'reflect-metadata';
 import 'dotenv/config';
-import express, { NextFunction, Request, Response } from 'express';
-import 'express-async-errors';
-import cors from 'cors';
-import { errors } from 'celebrate';
-import { pagination } from 'typeorm-pagination';
-import routes from './routes';
-import AppError from '@shared/infra/http/errors/AppErrors';
-import '@shared/infra/typeorm/AppDataSource';
-import '@shared/container';
-import uploadConfig from '@config/upload';
-import rateLimiter from './middlewares/ratelimiter';
+import { app } from './app';
+import { PostgresDataSource } from '../typeorm/AppDataSource';
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.use(rateLimiter);
-
-app.use(pagination);
-
-app.use('/files', express.static(uploadConfig.directory));
-app.use(routes);
-
-app.use(errors());
-
-app.use(
-  (error: Error, request: Request, response: Response, next: NextFunction) => {
-    if (error instanceof AppError) {
-      return response.status(error._statusCode).json({
-        status: 'error',
-        message: error._message,
-      });
-    }
-
-    console.log(error);
-
-    return response.status(500).json({
-      status: 'error',
-      message: 'Internal server error !',
+PostgresDataSource.initialize()
+  .then(() => {
+    const server = app.listen(3333, () => {
+      console.log('Server started on port 3333 !');
     });
-  },
-);
-
-app.listen(3333, () => {
-  console.log('Server started on port 3333 !');
-});
+  })
+  .catch(err => {
+    console.error('Error during Data Source initialization', err);
+  });

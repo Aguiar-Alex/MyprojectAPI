@@ -10,3 +10,8 @@ dist
 
 uploads/*
 !uploads/.gitkeep
+.docker/postgres
+docker-compose.yml
+Dockerfile
+entrypoint.sh
+
